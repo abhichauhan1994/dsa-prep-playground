@@ -402,6 +402,48 @@ public double findMaxAverage(int[] nums, int k) {
 **Time:** O(n) | **Space:** O(1)
 
 ---
+#### LC 1456 — Maximum Number of Vowels in a Substring of Given Length
+
+**Difficulty:** Medium
+**Companies:** Amazon, Google, Meta, Microsoft
+
+**Problem:** Given a string `s` and an integer `k`, return the maximum number of vowel letters in any substring of `s` with length `k`.
+
+**Why sliding window:** Fixed window size k, counting vowels. When the window slides, you add 1 if the new character is a vowel, subtract 1 if the leaving character was a vowel.
+
+```java
+class Solution {
+    public int maxVowels(String s, int k) {
+        Set<Character> vowels = Set.of('a', 'e', 'i', 'o', 'u');
+        
+        int vowelCount = 0;
+        
+        // Build first window
+        for (int i = 0; i < k; i++) {
+            if (vowels.contains(s.charAt(i))) vowelCount++;
+        }
+        
+        int maxVowels = vowelCount;
+        
+        // Slide the window
+        for (int right = k; right < s.length(); right++) {
+            // Add new character
+            if (vowels.contains(s.charAt(right))) vowelCount++;
+            
+            // Remove leaving character
+            if (vowels.contains(s.charAt(right - k))) vowelCount--;
+            
+            maxVowels = Math.max(maxVowels, vowelCount);
+        }
+        
+        return maxVowels;
+    }
+}
+```
+
+**Time:** O(n) | **Space:** O(1) — the vowel set is constant size
+
+---
 
 #### LC 567 — Permutation in String (Medium)
 ```java
