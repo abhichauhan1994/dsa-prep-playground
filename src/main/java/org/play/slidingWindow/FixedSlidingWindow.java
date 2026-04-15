@@ -1,6 +1,7 @@
 package org.play.slidingWindow;
 
 import java.util.Arrays;
+import java.util.Set;
 
 public class FixedSlidingWindow {
 
@@ -23,7 +24,6 @@ public class FixedSlidingWindow {
         return maxSum;
     }
 
-
     /*
      * LC 643 — Maximum Average Subarray I
      */
@@ -45,6 +45,51 @@ public class FixedSlidingWindow {
         }
 
         return maxSum/k;
+    }
+
+    /*
+     * LC 1456 — Maximum Number of Vowels in a Substring of Given Length
+     */
+    public static int maxVowelsInSubstringOfSizeK(String s, int k){
+        s = s.toLowerCase();
+        if(s.length() < k){
+            return 0;
+        }
+
+        int maxVowelsCount = Integer.MIN_VALUE;
+        Set<Character> charSet = Set.of('a','e','i','o','u');
+        int windowVowelCount = 0;
+
+        for(int i = 0; i < k; i++){
+            if(charSet.contains(s.charAt(i))){
+                windowVowelCount++;
+            }
+        }
+
+        maxVowelsCount = windowVowelCount;
+
+        for(int right = k; right < s.length(); right++){
+            if(charSet.contains(s.charAt(right))){
+                windowVowelCount++;
+            }
+            if(charSet.contains(s.charAt(right - k))){
+                windowVowelCount--;
+            }
+
+            maxVowelsCount = Math.max(windowVowelCount, maxVowelsCount);
+
+        }
+
+        return maxVowelsCount;
+    }
+
+    public static void runMaxVowelsInSubstringOfSizeKTests() {
+        System.out.println("=== maxVowelsInSubstringOfSizeKTests ===\n");
+
+        testMaxVowelsInSubstringOfSizeK1();
+        testMaxVowelsInSubstringOfSizeK2();
+        testMaxVowelsInSubstringOfSizeK3();
+        testMaxVowelsInSubstringOfSizeK4();
     }
 
     public static void runMaxSumOfSubarrayOfSizeKTests() {
@@ -201,4 +246,37 @@ public class FixedSlidingWindow {
         System.out.println("Test 8 - Decimal average: arr=" + Arrays.toString(arr) + ", k=" + k);
         System.out.printf("  Expected: 5.5, Got: %.2f, %s%n", result, Math.abs(result - 5.5) < 0.01 ? "PASS" : "FAIL");
     }
+
+    private static void testMaxVowelsInSubstringOfSizeK1() {
+        String s = "hello";
+        int k = 2;
+        int result = maxVowelsInSubstringOfSizeK(s, k);
+        System.out.println("Test 1 - Max vowels in substring of size 2: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 1, Got: " + result + ", " + (result == 1 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testMaxVowelsInSubstringOfSizeK2() {
+        String s = "hi";
+        int k = 3;
+        int result = maxVowelsInSubstringOfSizeK(s, k);
+        System.out.println("Test 2 - String length < k: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 0, Got: " + result + ", " + (result == 0 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testMaxVowelsInSubstringOfSizeK3() {
+        String s = "bcdfg";
+        int k = 2;
+        int result = maxVowelsInSubstringOfSizeK(s, k);
+        System.out.println("Test 3 - No vowels: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 0, Got: " + result + ", " + (result == 0 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testMaxVowelsInSubstringOfSizeK4() {
+        String s = "aeiou";
+        int k = 3;
+        int result = maxVowelsInSubstringOfSizeK(s, k);
+        System.out.println("Test 4 - All vowels: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 3, Got: " + result + ", " + (result == 3 ? "PASS" : "FAIL") + "\n");
+    }
+
 }
