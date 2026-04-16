@@ -11,5 +11,7 @@ public class Main {
         FixedSlidingWindow.runMaxVowelsInSubstringOfSizeKTests();
         TwoPointers.runMaxSumUsingTwoPointersTests();
         VariableSlidingWindow.runMaxFruitsIntoBasketOfSameColorTests();
+        VariableSlidingWindow.runLongestSubstringTests();
+        VariableSlidingWindow.runMinimumSizeSubarraySumTests();
     }
 }
