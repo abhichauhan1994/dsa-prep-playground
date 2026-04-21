@@ -2,6 +2,7 @@ package org.play.slidingWindow;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class VariableSlidingWindow {
 
@@ -171,26 +172,44 @@ public class VariableSlidingWindow {
       return minimumSizeSubarraySum == Integer.MAX_VALUE ? 0 : minimumSizeSubarraySum;
     }
 
-    public static Integer longestRepeatingCharacterReplacement(String s, int k){
-        int[] freq = new int[26];
-        int left = 0;
-        int maxFreq = 0;
-        int result = 0;
+  /**
+   * LC 424 — Longest Repeating Character Replacement
+   * Difficulty: Medium Companies: Google, Amazon, Microsoft, Meta, Bloomberg
+   *
+   * Problem: Given a string string and an integer atmostCharReplacement, you can replace at most atmostCharReplacement characters in the string. Return the length of the longest substring containing the same letter after performing at mostatmostCharReplacementk replacements.
+   *
+   * @param string
+   * @param atmostCharReplacement
+   * @return
+   */
+  public static Integer longestRepeatingCharReplacement(String string, int atmostCharReplacement) {
 
-        for (int right = 0; right < s.length(); right++) {
-            freq[s.charAt(right) - 'A']++;
-            maxFreq = Math.max(maxFreq, freq[s.charAt(right) - 'A']);
+      if(string.isEmpty()){
+          return 0;
+      }
 
-            int windowSize = right - left + 1;
-            if (windowSize - maxFreq > k) {
-                freq[s.charAt(left) - 'A']--;
-                left++;
-            }
+      int maxLength = Integer.MIN_VALUE;
 
-            result = Math.max(result, right - left + 1);
-        }
+      int left = 0;
+      int[] freq = new int[26];
+      int maxFreq = 0;
 
-        return result;
+      for(int right = 0; right < string.length(); right++){
+          char ch = string.charAt(right);
+          freq[ch - 'A']++;
+          maxFreq = Math.max(maxFreq, freq[ch - 'A']);
+
+          int slidingWindow = right - left + 1;
+
+          if(slidingWindow - maxFreq > atmostCharReplacement){
+              freq[string.charAt(left) - 'A']--;
+              left++;
+          }
+
+          maxLength = Math.max(maxLength, right-left+1);
+      }
+
+      return maxLength;
     }
 
     public static void runMinimumSizeSubarraySumTests() {
@@ -320,6 +339,74 @@ public class VariableSlidingWindow {
         int result = maxFruitsIntoBasketOfSameColor(arr);
         System.out.println("Test 4 - Single element: arr=" + java.util.Arrays.toString(arr));
         System.out.println("  Expected: 1, Got: " + result + ", " + (result == 1 ? "PASS" : "FAIL") + "\n");
+    }
+
+    public static void runLongestRepeatingCharReplacementTests() {
+        System.out.println("=== runLongestRepeatingCharReplacementTests ===\n");
+
+        testEmptyStringCharReplacement();
+        testSingleCharCharReplacement();
+        testAllSameCharacter();
+        testMixedCharactersWithK2();
+        testMixedCharactersWithK1();
+        testNoReplacementNeeded();
+        testHighKValue();
+    }
+
+    private static void testEmptyStringCharReplacement() {
+        String s = "";
+        int k = 0;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 1 - Empty string: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 0, Got: " + result + ", " + (result == 0 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testSingleCharCharReplacement() {
+        String s = "A";
+        int k = 0;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 2 - Single character: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 1, Got: " + result + ", " + (result == 1 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testAllSameCharacter() {
+        String s = "AAAA";
+        int k = 2;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 3 - All same character: s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 4, Got: " + result + ", " + (result == 4 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testMixedCharactersWithK2() {
+        String s = "ABAB";
+        int k = 2;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 4 - Mixed characters (ABAB with k=2): s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 4, Got: " + result + ", " + (result == 4 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testMixedCharactersWithK1() {
+        String s = "ABAB";
+        int k = 1;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 5 - Mixed characters (ABAB with k=1): s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 3, Got: " + result + ", " + (result == 3 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testNoReplacementNeeded() {
+        String s = "AABBA";
+        int k = 0;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 6 - No replacement needed (consecutive same): s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 2, Got: " + result + ", " + (result == 2 ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testHighKValue() {
+        String s = "ABCDE";
+        int k = 5;
+        int result = longestRepeatingCharReplacement(s, k);
+        System.out.println("Test 7 - High k value (k >= length): s=\"" + s + "\", k=" + k);
+        System.out.println("  Expected: 5, Got: " + result + ", " + (result == 5 ? "PASS" : "FAIL") + "\n");
     }
 
 }

@@ -9,9 +9,12 @@ public class Main {
         FixedSlidingWindow.runMaxSumOfSubarrayOfSizeKTests();
         FixedSlidingWindow.runMaxAverageSubArrayOfSizeKTests();
         FixedSlidingWindow.runMaxVowelsInSubstringOfSizeKTests();
+        FixedSlidingWindow.runtestPermutationInStringTests();
         TwoPointers.runMaxSumUsingTwoPointersTests();
         VariableSlidingWindow.runMaxFruitsIntoBasketOfSameColorTests();
         VariableSlidingWindow.runLongestSubstringTests();
         VariableSlidingWindow.runMinimumSizeSubarraySumTests();
+        VariableSlidingWindow.runLongestRepeatingCharReplacementTests();
+
     }
 }

@@ -1,6 +1,9 @@
 package org.play.slidingWindow;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class FixedSlidingWindow {
@@ -56,7 +59,6 @@ public class FixedSlidingWindow {
             return 0;
         }
 
-        int maxVowelsCount = Integer.MIN_VALUE;
         Set<Character> charSet = Set.of('a','e','i','o','u');
         int windowVowelCount = 0;
 
@@ -66,7 +68,7 @@ public class FixedSlidingWindow {
             }
         }
 
-        maxVowelsCount = windowVowelCount;
+        int maxVowelsCount = windowVowelCount;
 
         for(int right = k; right < s.length(); right++){
             if(charSet.contains(s.charAt(right))){
@@ -82,6 +84,87 @@ public class FixedSlidingWindow {
 
         return maxVowelsCount;
     }
+
+    public static Boolean permutationInString(String s1, String s2){
+
+        if(s1.length() > s2.length()){
+            return false;
+        }
+
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        int[] s1Freq = new int[26];
+        int[] s2Freq = new int[26];
+
+        //s1 = abc
+        //s2 = abdbac
+
+        for(char ch : s1.toCharArray()){
+            s1Freq[ch - 'a']++;
+        }
+
+        int required = 0;
+        for(int fre : s1Freq){
+            if(fre > 0){
+                required ++;
+            }
+        }
+
+        int left = 0;
+        int formed = 0;
+
+        for (int right = 0; right < s2.length(); right++) {
+            char ch = s2.charAt(right);
+            s2Freq[ch - 'a']++;
+
+            if (s1Freq[ch - 'a'] > 0 && s1Freq[ch - 'a'] == s2Freq[ch - 'a']) {
+                formed++;
+            }
+
+            if (right - left + 1 > s1.length()) {
+                char leftChar = s2.charAt(left);
+
+                if (s1Freq[leftChar - 'a'] > 0 && s1Freq[leftChar - 'a'] == s2Freq[leftChar - 'a']) {
+                    formed--;
+
+                    }
+
+                left++;
+                s2Freq[leftChar - 'a']--;
+            }
+
+            if (right - left + 1 == s1.length() && formed == required) {
+                return true;
+            }
+        }
+
+        return false;
+  }
+
+  public static void runtestPermutationInStringTests() {
+        System.out.println("=== testPermutationInStringTests ===\n");
+
+        testPermutationInString1();
+        testPermutationInString2();
+    }
+
+    private static void testPermutationInString1() {
+        String s1 =  "ab";
+        String s2 = "eidbaooo";
+        Boolean result = permutationInString(s1, s2);
+        System.out.println("Test 1 - Permutation In String: result=" + result );
+        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result == Boolean.TRUE ? "PASS" : "FAIL") + "\n");
+    }
+
+    private static void testPermutationInString2() {
+        String s1 =  "abc";
+        String s2 = "abdbac";
+        Boolean result = permutationInString(s1, s2);
+        System.out.println("Test 2 - Permutation In String: result=" + result );
+        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result == Boolean.TRUE ? "PASS" : "FAIL") + "\n");
+    }
+
 
     public static void runMaxVowelsInSubstringOfSizeKTests() {
         System.out.println("=== maxVowelsInSubstringOfSizeKTests ===\n");
