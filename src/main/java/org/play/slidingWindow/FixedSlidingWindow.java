@@ -1,8 +1,10 @@
 package org.play.slidingWindow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,7 +87,17 @@ public class FixedSlidingWindow {
         return maxVowelsCount;
     }
 
-    public static Boolean permutationInString(String s1, String s2){
+  /**
+   * LC 567 — Permutation in String
+   * Difficulty: Medium Companies: Google, Amazon, Microsoft, Meta, Bloomberg
+   *
+   * Problem: Given strings s1 and s2, return true if s2 contains a permutation of s1. In other words, one of s1's permutations is a substring of s2.
+   *
+   * @param s1
+   * @param s2
+   * @return
+   */
+  public static Boolean permutationInString(String s1, String s2) {
 
         if(s1.length() > s2.length()){
             return false;
@@ -127,8 +139,7 @@ public class FixedSlidingWindow {
 
                 if (s1Freq[leftChar - 'a'] > 0 && s1Freq[leftChar - 'a'] == s2Freq[leftChar - 'a']) {
                     formed--;
-
-                    }
+                }
 
                 left++;
                 s2Freq[leftChar - 'a']--;
@@ -142,6 +153,66 @@ public class FixedSlidingWindow {
         return false;
   }
 
+  /**
+   * LC 438 — Find All Anagrams in a String
+   * Difficulty: Medium Companies: Amazon, Google, Meta, Microsoft, Bloomberg
+   *
+   * Problem: Given strings s and p, return an array of all the start indices of p's anagrams in s.
+   *
+   */
+  public static List<Integer> anagramIndexes(String p, String s){
+
+      if(p.length() > s.length()){
+          return Collections.emptyList();
+      }
+
+      p = p.toLowerCase();
+      s = s.toLowerCase();
+
+      int[] arr = new int[26];
+      int[] srr = new int[26];
+
+      for(char ch: p.toCharArray()){
+          arr[ch - 'a']++;
+      }
+
+      int maxFreq = 0;
+      for(int ar: arr){
+          if(ar > 0) maxFreq++;
+      }
+
+      List<Integer> returnList = new ArrayList<>();
+
+      // Input:  s = "cbaebabacd", p = "abc"
+      // Output: [0, 6]
+
+      int windowCount = 0;
+      int formed = 0;
+      int left = 0;
+      for(int right = 0; right < s.length(); right++){
+          char rightChar = s.charAt(right);
+          srr[rightChar - 'a']++;
+
+          if(arr[rightChar - 'a'] > 0 && arr[rightChar - 'a'] == srr[rightChar - 'a']) formed++;
+
+          if(right - left + 1  > p.length()){
+              char leftChar = s.charAt(left);
+              if(arr[leftChar - 'a'] > 0 && arr[leftChar - 'a'] == srr[leftChar - 'a']){
+                  formed--;
+              }
+
+              srr[leftChar - 'a']--;
+              left++;
+          }
+
+          if(left - right + 1 > p.length() && formed == maxFreq ){
+              returnList.add(left);
+          }
+      }
+
+      return returnList;
+  }
+
   public static void runtestPermutationInStringTests() {
         System.out.println("=== testPermutationInStringTests ===\n");
 
@@ -153,8 +224,13 @@ public class FixedSlidingWindow {
         String s1 =  "ab";
         String s2 = "eidbaooo";
         Boolean result = permutationInString(s1, s2);
+        Boolean restestResult = checkPermutationInclusion(s1,s2);
+
         System.out.println("Test 1 - Permutation In String: result=" + result );
-        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result == Boolean.TRUE ? "PASS" : "FAIL") + "\n");
+        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result ? "PASS" : "FAIL") + "\n");
+
+        System.out.println("Test 1 retest  - Permutation In String: result=" + restestResult );
+        System.out.println("  Expected: TRUE, Got: " + restestResult + ", " + (restestResult ? "PASS" : "FAIL") + "\n");
     }
 
     private static void testPermutationInString2() {
@@ -162,7 +238,7 @@ public class FixedSlidingWindow {
         String s2 = "abdbac";
         Boolean result = permutationInString(s1, s2);
         System.out.println("Test 2 - Permutation In String: result=" + result );
-        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result == Boolean.TRUE ? "PASS" : "FAIL") + "\n");
+        System.out.println("  Expected: TRUE, Got: " + result + ", " + (result ? "PASS" : "FAIL") + "\n");
     }
 
 
@@ -360,6 +436,56 @@ public class FixedSlidingWindow {
         int result = maxVowelsInSubstringOfSizeK(s, k);
         System.out.println("Test 4 - All vowels: s=\"" + s + "\", k=" + k);
         System.out.println("  Expected: 3, Got: " + result + ", " + (result == 3 ? "PASS" : "FAIL") + "\n");
+    }
+
+    public static Boolean checkPermutationInclusion(String s1, String s2) {
+        if(s1.length() > s2.length()){
+            return false;
+        }
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        int[] s1Arr = new int[26];
+        int[] s2Arr = new int[26];
+
+        for (char ch : s1.toCharArray()){
+            s1Arr[ch - 'a']++;
+        }
+
+        int required = 0;
+        for(int val : s1Arr){
+            if(val > 0){
+                required++;
+            }
+        }
+
+        int left = 0;
+        int windowCount = 0;
+
+        for(int right = 0; right < s2.length(); right++){
+            char rightChar = s2.charAt(right);
+            s2Arr[rightChar - 'a']++;
+
+            if(s1Arr[rightChar - 'a'] > 0 && s1Arr[rightChar - 'a'] == s2Arr[rightChar - 'a']){
+                windowCount++;
+            }
+
+            if(right - left + 1 > s1.length()){
+                char leftChar = s2.charAt(left);
+                if(s2Arr[leftChar - 'a'] > 0 && s1Arr[leftChar - 'a'] == s2Arr[leftChar - 'a']){
+                    windowCount--;
+                }
+                left++;
+                s2Arr[leftChar - 'a']--;
+            }
+
+            if(right - left + 1 == s1.length() && windowCount == required){
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
 }
