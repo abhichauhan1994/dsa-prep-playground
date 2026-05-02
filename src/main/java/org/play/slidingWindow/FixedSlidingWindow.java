@@ -205,7 +205,7 @@ public class FixedSlidingWindow {
               left++;
           }
 
-          if(left - right + 1 > p.length() && formed == maxFreq ){
+          if(right - left + 1 > p.length() && formed == maxFreq ){
               returnList.add(left);
           }
       }
@@ -224,13 +224,9 @@ public class FixedSlidingWindow {
         String s1 =  "ab";
         String s2 = "eidbaooo";
         Boolean result = permutationInString(s1, s2);
-        Boolean restestResult = checkPermutationInclusion(s1,s2);
 
         System.out.println("Test 1 - Permutation In String: result=" + result );
         System.out.println("  Expected: TRUE, Got: " + result + ", " + (result ? "PASS" : "FAIL") + "\n");
-
-        System.out.println("Test 1 retest  - Permutation In String: result=" + restestResult );
-        System.out.println("  Expected: TRUE, Got: " + restestResult + ", " + (restestResult ? "PASS" : "FAIL") + "\n");
     }
 
     private static void testPermutationInString2() {
@@ -436,56 +432,6 @@ public class FixedSlidingWindow {
         int result = maxVowelsInSubstringOfSizeK(s, k);
         System.out.println("Test 4 - All vowels: s=\"" + s + "\", k=" + k);
         System.out.println("  Expected: 3, Got: " + result + ", " + (result == 3 ? "PASS" : "FAIL") + "\n");
-    }
-
-    public static Boolean checkPermutationInclusion(String s1, String s2) {
-        if(s1.length() > s2.length()){
-            return false;
-        }
-        s1 = s1.toLowerCase();
-        s2 = s2.toLowerCase();
-
-        int[] s1Arr = new int[26];
-        int[] s2Arr = new int[26];
-
-        for (char ch : s1.toCharArray()){
-            s1Arr[ch - 'a']++;
-        }
-
-        int required = 0;
-        for(int val : s1Arr){
-            if(val > 0){
-                required++;
-            }
-        }
-
-        int left = 0;
-        int windowCount = 0;
-
-        for(int right = 0; right < s2.length(); right++){
-            char rightChar = s2.charAt(right);
-            s2Arr[rightChar - 'a']++;
-
-            if(s1Arr[rightChar - 'a'] > 0 && s1Arr[rightChar - 'a'] == s2Arr[rightChar - 'a']){
-                windowCount++;
-            }
-
-            if(right - left + 1 > s1.length()){
-                char leftChar = s2.charAt(left);
-                if(s2Arr[leftChar - 'a'] > 0 && s1Arr[leftChar - 'a'] == s2Arr[leftChar - 'a']){
-                    windowCount--;
-                }
-                left++;
-                s2Arr[leftChar - 'a']--;
-            }
-
-            if(right - left + 1 == s1.length() && windowCount == required){
-                return true;
-            }
-        }
-
-        return false;
-
     }
 
 }
